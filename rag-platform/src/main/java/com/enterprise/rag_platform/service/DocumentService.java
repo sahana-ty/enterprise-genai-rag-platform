@@ -18,6 +18,9 @@ public class DocumentService {
     @Autowired
     private DocumentChunkRepository chunkRepository;
 
+    @Autowired
+    private EmbeddingService embeddingService;
+
     public String extractTextFromFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
             return tika.parseToString(inputStream);
@@ -31,5 +34,31 @@ public class DocumentService {
             DocumentChunk chunk = new DocumentChunk(text, fileName);
             chunkRepository.save(chunk);
         }
+    }
+
+    // Search stored chunks using vector similarity
+    public String searchRelevantContext(String query) {
+        List<DocumentChunk> allChunks = chunkRepository.findAll();
+        if (allChunks.isEmpty()) {
+            return "No documents found in the database.";
+        }
+
+        float[] queryEmbedding = embeddingService.generateQueryEmbedding(query);
+        
+        String bestMatch = "";
+        double maxSimilarity = -1.0;
+
+        for (DocumentChunk chunk : allChunks) {
+            // Generate mock embedding for the stored chunk (or fetch if stored)
+            float[] chunkEmbedding = embeddingService.generateQueryEmbedding(chunk.getChunkText());
+            double similarity = embeddingService.cosineSimilarity(queryEmbedding, chunkEmbedding);
+
+            if (similarity > maxSimilarity) {
+                maxSimilarity = similarity;
+                bestMatch = chunk.getChunkText();
+            }
+        }
+
+        return bestMatch;
     }
 }

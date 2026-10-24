@@ -37,4 +37,9 @@ public class DocumentController {
                 " -> Extracted " + extractedText.length() + " chars, created " + 
                 chunks.size() + " chunks, and saved to Oracle 23ai!");
     }
+    @GetMapping("/search")
+    public ResponseEntity<String> searchDocuments(@RequestParam("query") String query) {
+        String relevantContext = documentService.searchRelevantContext(query);
+        return ResponseEntity.ok("Best matching context found:\n\n" + relevantContext);
+    }
 }
