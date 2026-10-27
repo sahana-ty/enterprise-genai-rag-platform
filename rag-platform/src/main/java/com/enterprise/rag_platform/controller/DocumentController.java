@@ -39,4 +39,9 @@ public class DocumentController {
             return ResponseEntity.internalServerError().body("Failed to answer query: " + e.getMessage());
         }
     }
+    @GetMapping("/stats")
+    public ResponseEntity<String> getPlatformStats() {
+        long totalChunks = documentService.getTotalDocumentChunksCount();
+        return ResponseEntity.ok("Enterprise RAG Platform Status: ONLINE\nTotal Stored Chunks in Oracle: " + totalChunks);
+    }
 }

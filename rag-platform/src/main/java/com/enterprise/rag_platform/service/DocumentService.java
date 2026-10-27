@@ -65,4 +65,7 @@ public class DocumentService {
         var response = chatModel.call(prompt);
         return response.getResults().get(0).getOutput().getText();
     }
+    public long getTotalDocumentChunksCount() {
+        return chunkRepository.count();
+    }
 }
