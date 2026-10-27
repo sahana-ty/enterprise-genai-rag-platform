@@ -22,7 +22,7 @@ public class DocumentService {
     private DocumentChunkRepository chunkRepository;
 
     @Autowired
-    private ChatModel chatModel; // Fixed: Injected chatModel
+    private ChatModel chatModel;
 
     public String extractTextFromFile(MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
@@ -52,19 +52,17 @@ public class DocumentService {
     }
 
     public String answerWithRAG(String query) {
+        // Fetch stored chunks from Oracle database
         List<DocumentChunk> matchingChunks = chunkRepository.findAll();
         
         StringBuilder context = new StringBuilder();
         for (DocumentChunk chunk : matchingChunks) {
-            // Note: If chunk.getContent() shows an error, change it to chunk.getText() 
-            // depending on what getter you defined in your DocumentChunk model class.
             context.append(chunk.getChunkText()).append("\n");
         }
 
         Prompt prompt = new Prompt("Context:\n" + context.toString() + "\n\nQuery: " + query);
         
         var response = chatModel.call(prompt);
-        // Fixed: Using getResults() safely across Spring AI versions
         return response.getResults().get(0).getOutput().getText();
     }
 }
