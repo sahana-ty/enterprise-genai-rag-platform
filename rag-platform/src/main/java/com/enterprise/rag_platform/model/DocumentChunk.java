@@ -1,6 +1,7 @@
 package com.enterprise.rag_platform.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "document_chunks")
@@ -11,26 +12,33 @@ public class DocumentChunk {
     @SequenceGenerator(name = "chunk_seq", sequenceName = "DOCUMENT_CHUNK_SEQ", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, length = 4000)
-    private String chunkText;
+    @Column(name = "CHUNK_TEXT", length = 4000)
+    private String content;
+    
 
-    private String fileName;
+    private String filename;
+
+    private LocalDateTime uploadTimestamp;
 
     // Constructors
     public DocumentChunk() {}
 
-    public DocumentChunk(String chunkText, String fileName) {
-        this.chunkText = chunkText;
-        this.fileName = fileName;
+    public DocumentChunk(String content, String filename, LocalDateTime uploadTimestamp) {
+        this.content = content;
+        this.filename = filename;
+        this.uploadTimestamp = uploadTimestamp;
     }
 
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getChunkText() { return chunkText; }
-    public void setChunkText(String chunkText) { this.chunkText = chunkText; }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
-    public String getFileName() { return fileName; }
-    public void setFileName(String fileName) { this.fileName = fileName; }
+    public String getFilename() { return filename; }
+    public void setFilename(String filename) { this.filename = filename; }
+
+    public LocalDateTime getUploadTimestamp() { return uploadTimestamp; }
+    public void setUploadTimestamp(LocalDateTime uploadTimestamp) { this.uploadTimestamp = uploadTimestamp; }
 }

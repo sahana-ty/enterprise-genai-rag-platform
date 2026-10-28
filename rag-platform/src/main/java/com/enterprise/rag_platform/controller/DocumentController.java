@@ -34,7 +34,7 @@ public class DocumentController {
     public ResponseEntity<String> askQuestion(@RequestParam("query") String query) {
         try {
             String answer = documentService.answerWithRAG(query);
-            return ResponseEntity.ok(answer);
+            return ResponseEntity.ok(answer); // Return the raw service response directly
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Failed to answer query: " + e.getMessage());
         }
